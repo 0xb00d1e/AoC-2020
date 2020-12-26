@@ -2,7 +2,21 @@ def part1():
     input_data = load_data()
     binary_repr = convert_to_binary_repr(input_data)
     binary_repr.sort()
-    print(binary_repr[-1])
+    print(f'Answer - Part 1: {binary_repr[-1]}')
+
+
+def part2():
+    input_data = load_data()
+    binary_repr = convert_to_binary_repr(input_data)
+    binary_repr.sort()
+
+    for i in range(0, len(binary_repr)):
+        try:
+            if binary_repr[i+1] - binary_repr[i] != 1:
+                print(f'Answer - Part 2: {binary_repr[i+1] - 1}')
+                break
+        except IndexError:
+            break
 
 
 def convert_to_binary_repr(input_data):
@@ -25,3 +39,4 @@ def load_data():
 
 if __name__ == '__main__':
     part1()
+    part2()
