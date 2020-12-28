@@ -1,35 +1,40 @@
 def part1():
     input_data = load_data()
     boot_code = parse_instructions(input_data)
-    answer = execute_till_loop(boot_code)
-    print(f'Answer - Part1: {answer}')
+    return_status, return_value = emulate(boot_code)
+    if return_status == 1:
+        print(f'Answer - Part1: {return_value}')
 
 
-def execute_till_loop(boot_code):
-    already_executed = []
+def emulate(boot_code):
+    already_emulated = []
     instruction_pointer = 0
     accumulator = 0
 
     while True:
-        instruction = boot_code[instruction_pointer][0]
-        argument = boot_code[instruction_pointer][1]
-        
-        if instruction_pointer in already_executed:
-            return accumulator
+        try:
+            instruction = boot_code[instruction_pointer][0]
+            argument = boot_code[instruction_pointer][1]
 
-        if instruction == 'acc':
-            accumulator += argument
-            already_executed.append(instruction_pointer)
-            instruction_pointer += 1
-        elif instruction == 'nop':
-            already_executed.append(instruction_pointer)
-            instruction_pointer += 1
-        elif instruction == 'jmp':
-            already_executed.append(instruction_pointer)
-            instruction_pointer += argument
-        else:
-            print(f'Unrecognized instruction at line {instruction_pointer}')
-            break
+            if instruction_pointer in already_emulated:
+                return (1, accumulator)
+
+            if instruction == 'acc':
+                accumulator += argument
+                already_emulated.append(instruction_pointer)
+                instruction_pointer += 1
+            elif instruction == 'nop':
+                already_emulated.append(instruction_pointer)
+                instruction_pointer += 1
+            elif instruction == 'jmp':
+                already_emulated.append(instruction_pointer)
+                instruction_pointer += argument
+            else:
+                return(-1, accumulator)
+        except IndexError:
+            if instruction_pointer == len(boot_code):
+                return(0, accumulator)
+            return(-2, accumulator)
 
 
 def parse_instructions(input_data):
