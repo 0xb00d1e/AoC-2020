@@ -6,6 +6,25 @@ def part1():
         print(f'Answer - Part1: {return_value}')
 
 
+def part2():
+    input_data = load_data()
+    boot_code = parse_instructions(input_data)
+
+    for instruction_pointer, line in enumerate(boot_code):
+        copy_of_boot_code = boot_code.copy()
+        instruction, argument = copy_of_boot_code[instruction_pointer]
+
+        if instruction == 'jmp':
+            copy_of_boot_code[instruction_pointer] = ('nop', 0)
+        elif instruction == 'nop':
+            copy_of_boot_code[instruction_pointer] = ('jmp', argument)
+
+        return_status, return_value = emulate(copy_of_boot_code)
+        if return_status == 0:
+            print(f'Answer - Part2: {return_value}')
+            break
+
+
 def emulate(boot_code):
     already_emulated = []
     instruction_pointer = 0
@@ -13,8 +32,7 @@ def emulate(boot_code):
 
     while True:
         try:
-            instruction = boot_code[instruction_pointer][0]
-            argument = boot_code[instruction_pointer][1]
+            instruction, argument = boot_code[instruction_pointer]
 
             if instruction_pointer in already_emulated:
                 return (1, accumulator)
@@ -53,3 +71,4 @@ def load_data():
 
 if __name__ == '__main__':
     part1()
+    part2()
